@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Active Tickets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .ticket {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 5px solid #007bff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+
+    .ticket:hover {
+      background-color: #f0f8ff;
+    }
+
+    .details {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      background-color: #f7f7f7;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Active Tickets</h1>
+
+  <div id="ticketList"></div>
+
+  <script>
+    async function loadTickets() {
+      const res = await fetch('/tickets');
+      const data = await res.json();
+      const list = document.getElementById('ticketList');
+
+      data.forEach((ticket, index) => {
+        const div = document.createElement('div');
+        div.className = 'ticket';
+        div.innerHTML = `
+          <div><strong>Ticket #${index + 1}</strong> - ${ticket.requestType} for ${ticket.requestedFor}</div>
+          <div class="details">
+            <p><span class="label">Request Type:</span> ${ticket.requestType}</p>
+            <p><span class="label">Account Type:</span> ${ticket.accountType}</p>
+            <p><span class="label">Access Level:</span> ${ticket.accessLevel}</p>
+            <p><span class="label">Server Names:</span> ${ticket.serverNames}</p>
+            <p><span class="label">User List:</span> ${ticket.userList}</p>
+            <p><span class="label">Employee ID:</span> ${ticket.employeeId}</p>
+            <p><span class="label">Centrify Profiles:</span> ${ticket.centrifyList}</p>
+            <p><span class="label">BOKS Profiles:</span> ${ticket.boksList}</p>
+            <p><span class="label">Other Profiles:</span> ${ticket.profileList}</p>
+          </div>
+        `;
+        div.addEventListener('click', () => {
+          const details = div.querySelector('.details');
+          details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        });
+        list.appendChild(div);
+      });
+    }
+
+    loadTickets();
+  </script>
+</body>
+</html>
