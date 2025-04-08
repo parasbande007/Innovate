@@ -110,3 +110,24 @@ def get_tickets():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+from flask import request, redirect, jsonify
+
+@app.route('/submit', methods=['POST'])
+def submit_ticket():
+    try:
+        data = request.get_json()
+        if not data:
+            print("❌ No JSON data received")
+            return jsonify({"message": "No data received"}), 400
+
+        print("✅ Received data:", data)
+
+        tickets.insert_one(data)
+        print("✅ Ticket saved to database.")
+
+        return redirect('/tickets')  # Redirect to the active tickets page
+
+    except Exception as e:
+        print("🔥 Error saving ticket:", str(e))
+        return jsonify({"message": "Error saving ticket", "error": str(e)}), 500
